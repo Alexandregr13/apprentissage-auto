@@ -1,0 +1,24 @@
+{
+  "InputSize" : 2,
+  "BatchSize" : 4,
+  "Initializer" : "Xavier",
+  "Layers" : [ {
+    "Size" : 2,
+    "ActivatorType" : "LeakyRelu",
+    "Type" : "Standard",
+    "GradientAdjustmentParameters" : {
+      "Type" : "Momentum",
+      "LearningRate" : 0.1,
+      "Momentum" : 0.9
+    }
+  }, {
+    "Size" : 1,
+    "ActivatorType" : "LeakyRelu",
+    "Type" : "Standard",
+    "GradientAdjustmentParameters" : {
+      "Type" : "Momentum",
+      "LearningRate" : 0.1,
+      "Momentum" : 0.9
+    }
+  } ]
+}

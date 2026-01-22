@@ -1,0 +1,25 @@
+{
+  "InputSize" : 1,
+  "BatchSize" : 10,
+  "Initializer" : "Xavier",
+  "Layers" : [ {
+    "Size" : 20,
+    "ActivatorType" : "Tanh",
+    "Type" : "Standard",
+    "GradientAdjustmentParameters" : {
+      "Type" : "Momentum",
+      "LearningRate" : 0.01,
+      "Momentum" : 0.9
+    },
+    "L2Regularization" : 0.0001
+  }, {
+    "Size" : 1,
+    "ActivatorType" : "Tanh",
+    "Type" : "Standard",
+    "GradientAdjustmentParameters" : {
+      "Type" : "Momentum",
+      "LearningRate" : 0.01,
+      "Momentum" : 0.9
+    }
+  } ]
+}

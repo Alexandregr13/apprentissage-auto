@@ -1,0 +1,14 @@
+{
+    "network description": "../And/and_network_with_momentum.json",
+    "training data" : "../And/and.csv",
+    "validation data" : "../And/and_valid.csv",
+    "epochs" : 10000,
+    "trained network" : "and_learned_momentum.json",
+    "cost function" : "Quadratic",
+    "initialize" : true,
+    "learning log file" : "error_momentum.csv",
+    "validation steps" : 20,
+    "final validation" : "validation_momentum.csv",
+    "activation file" : "activation_momentum.csv",
+    "gnuplot" : false   
+}
