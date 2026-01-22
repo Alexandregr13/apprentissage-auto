@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="4" failures="0" name="fr.ensimag.deep.layers.LayerTest" time="0.039" errors="0" skipped="0">
+<testsuite tests="4" failures="0" name="fr.ensimag.deep.layers.LayerTest" time="0.011" errors="0" skipped="0">
   <properties>
     <property name="jansi.mode" value="force"/>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="21.0.9+10-Ubuntu-124.04"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-21-openjdk-amd64/lib"/>
-    <property name="maven.multiModuleProjectDirectory" value="/home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/2024-2025_Apprentissage_auto_pour_la_finance/Projet/Students"/>
+    <property name="maven.multiModuleProjectDirectory" value="/home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/apprentissage-auto/Projet/Students"/>
     <property name="java.vm.vendor" value="Ubuntu"/>
     <property name="java.vendor.url" value="https://ubuntu.com/"/>
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
@@ -14,7 +14,7 @@
     <property name="user.country" value="FR"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="/home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/2024-2025_Apprentissage_auto_pour_la_finance/Projet/Students"/>
+    <property name="user.dir" value="/home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/apprentissage-auto/Projet/Students"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="java.runtime.version" value="21.0.9+10-Ubuntu-124.04"/>
     <property name="os.arch" value="amd64"/>
@@ -58,8 +58,8 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="sun.cpu.endian" value="little"/>
   </properties>
-  <testcase classname="fr.ensimag.deep.layers.LayerTest" name="fr.ensimag.deep.layers.LayerTest.testForwardPropagation" time="0.037"/>
-  <testcase classname="fr.ensimag.deep.layers.LayerTest" name="fr.ensimag.deep.layers.LayerTest.testForwardPropagationBatch" time="0.002"/>
+  <testcase classname="fr.ensimag.deep.layers.LayerTest" name="fr.ensimag.deep.layers.LayerTest.testForwardPropagation" time="0.01"/>
+  <testcase classname="fr.ensimag.deep.layers.LayerTest" name="fr.ensimag.deep.layers.LayerTest.testForwardPropagationBatch" time="0.001"/>
   <testcase classname="fr.ensimag.deep.layers.LayerTest" name="fr.ensimag.deep.layers.LayerTest.testBackpropagationAndMomentum" time="0"/>
   <testcase classname="fr.ensimag.deep.layers.LayerTest" name="fr.ensimag.deep.layers.LayerTest.testL2Regularization" time="0"/>
 </testsuite>

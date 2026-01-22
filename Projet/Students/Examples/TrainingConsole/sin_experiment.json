@@ -1,10 +1,10 @@
 {
-    "network description": "../Sin/sin_network.json",
-    "training data": "../Sin/sin_train.csv",
-    "validation data": "../Sin/sin_valid.csv",
-    "max epochs": 2000,
+    "network description": "Examples/Sin/sin_network.json",
+    "training data": "Examples/Sin/sin_train.csv",
+    "validation data": "Examples/Sin/sin_valid.csv",
+    "epochs": 2000,
     "batch size": 50,
     "learning rate": 0.001,
-    "cost function": "quadratic",
-    "evaluation interval": 50
+    "cost function": "Quadratic",
+    "validation steps": 50
 }

@@ -1,7 +1,7 @@
 {
-    "network description": "../Cos/cos_network.json",
-    "training data" : "../Cos/cos_train.csv",
-    "validation data" : "../Cos/cos_valid.csv",
+    "network description": "Examples/Cos/cos_network.json",
+    "training data" : "Examples/Cos/cos_train.csv",
+    "validation data" : "Examples/Cos/cos_valid.csv",
     "epochs" : 2000,
     "trained network" : "cos_learned.json",
     "cost function" : "Quadratic",

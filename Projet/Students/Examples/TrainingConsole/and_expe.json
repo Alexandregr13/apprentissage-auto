@@ -1,7 +1,7 @@
 {
-    "network description": "../And/and_network.json",
-    "training data" : "../And/and.csv",
-    "validation data" : "../And/and_valid.csv",
+    "network description": "Examples/And/and_network.json",
+    "training data" : "Examples/And/and.csv",
+    "validation data" : "Examples/And/and_valid.csv",
     "epochs" : 10000,
     "trained network" : "and_learned.json",
     "cost function" : "Quadratic",
@@ -10,5 +10,5 @@
     "validation steps" : 20,
     "final validation" : "validation.csv",
     "activation file" : "activation.csv",
-    "gnuplot" : true   
+    "gnuplot" : false   
 }

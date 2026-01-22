@@ -1,7 +1,7 @@
 {
-    "network description": "../And/and_network_with_momentum.json",
-    "training data" : "../And/and.csv",
-    "validation data" : "../And/and_valid.csv",
+    "network description": "Examples/And/and_network_with_momentum.json",
+    "training data" : "Examples/And/and.csv",
+    "validation data" : "Examples/And/and_valid.csv",
     "epochs" : 10000,
     "trained network" : "and_learned_momentum.json",
     "cost function" : "Quadratic",

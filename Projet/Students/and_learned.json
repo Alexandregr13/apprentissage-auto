@@ -5,21 +5,25 @@
     "Size" : 2,
     "ActivatorType" : "LeakyRelu",
     "GradientAdjustmentParameters" : {
-      "Type" : "FixedLearningRate",
-      "LearningRate" : 0.01
+      "Type" : "Momentum",
+      "LearningRate" : 0.01,
+      "Momentum" : 0.9
     },
     "Type" : "StandardLayer",
-    "Bias" : [ -0.5166244739569801, -1.2045131432739858E-4 ],
-    "Weights" : [ [ 0.915881748403066, -0.11427747652685925 ], [ 0.9149325748749593, -0.9761472995065452 ] ]
+    "L2Regularization" : 0.0,
+    "Bias" : [ 0.5726050766648397, 0.4824408184680971 ],
+    "Weights" : [ [ 0.7079017919579459, -0.8389821261454694 ], [ -1.358949433082414, 0.3565516691155054 ] ]
   }, {
     "Size" : 1,
     "ActivatorType" : "LeakyRelu",
     "GradientAdjustmentParameters" : {
-      "Type" : "FixedLearningRate",
-      "LearningRate" : 0.01
+      "Type" : "Momentum",
+      "LearningRate" : 0.01,
+      "Momentum" : 0.9
     },
     "Type" : "StandardLayer",
-    "Bias" : [ -0.4384250757596469 ],
-    "Weights" : [ [ 1.0932696960364834 ], [ -0.15299709177767468 ] ]
+    "L2Regularization" : 0.0,
+    "Bias" : [ 0.9993975126224323 ],
+    "Weights" : [ [ -0.7838063804380779 ], [ -1.1985321402089777 ] ]
   } ]
 }
