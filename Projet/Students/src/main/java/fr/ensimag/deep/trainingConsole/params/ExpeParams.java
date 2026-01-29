@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "trained network",
     "cost function",
     "initialize",
+    "normalize",
+    "normalizer file",
     "learning log file",
     "validation steps",
     "final validation",
@@ -43,6 +45,10 @@ public class ExpeParams {
     private String costFunction;
     @JsonProperty("initialize")
     private Boolean initialize;
+    @JsonProperty("normalize")
+    private Boolean normalize;
+    @JsonProperty("normalizer file")
+    private String normalizerFile;
     @JsonProperty("learning log file")
     private String learningLogFile;
     @JsonProperty("validation steps")
@@ -158,6 +164,36 @@ public class ExpeParams {
 
     public ExpeParams withInitialize(Boolean initialize) {
         this.initialize = initialize;
+        return this;
+    }
+
+    @JsonProperty("normalize")
+    public Boolean getNormalize() {
+        return normalize;
+    }
+
+    @JsonProperty("normalize")
+    public void setNormalize(Boolean normalize) {
+        this.normalize = normalize;
+    }
+
+    public ExpeParams withNormalize(Boolean normalize) {
+        this.normalize = normalize;
+        return this;
+    }
+
+    @JsonProperty("normalizer file")
+    public String getNormalizerFile() {
+        return normalizerFile;
+    }
+
+    @JsonProperty("normalizer file")
+    public void setNormalizerFile(String normalizerFile) {
+        this.normalizerFile = normalizerFile;
+    }
+
+    public ExpeParams withNormalizerFile(String normalizerFile) {
+        this.normalizerFile = normalizerFile;
         return this;
     }
 

@@ -22,6 +22,7 @@ import fr.ensimag.deep.trainer.dataShufflers.UniformShuffler;
 import fr.ensimag.deep.trainingConsole.params.CostFunctionFactory;
 import fr.ensimag.deep.trainingConsole.params.ExpeParams;
 import fr.ensimag.deep.utils.DataMatrix;
+import fr.ensimag.deep.utils.DataNormalizer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -118,11 +119,25 @@ public class Main
 
             // loads the dataset
             DataMatrix trainingData = null;
-            DataMatrix validationData = null;            
+            DataMatrix validationData = null;
             ICostFunction costFunction = CostFunctionFactory.create(params.getCostFunction());
             NetworkTrainer trainer = new NetworkTrainer(network, costFunction, new UniformShuffler());
             trainingData = readAllData(params.getTrainingData(), inputSize, outputSize);
             validationData = readAllData(params.getValidationData(), inputSize, outputSize);
+
+            // normalize data if requested
+            if (params.getNormalize() != null && params.getNormalize()) {
+                DataNormalizer normalizer = new DataNormalizer();
+                SimpleMatrix normalizedTrainInputs = normalizer.fitTransform(trainingData.getInputs());
+                SimpleMatrix normalizedValidInputs = normalizer.transform(validationData.getInputs());
+                trainingData = new DataMatrix(normalizedTrainInputs, trainingData.getOutputs());
+                validationData = new DataMatrix(normalizedValidInputs, validationData.getOutputs());
+
+                // save normalizer parameters
+                if (params.getNormalizerFile() != null && !params.getNormalizerFile().isEmpty()) {
+                    normalizer.save(params.getNormalizerFile());
+                }
+            }
 
             // prepares the error csv file if necessary
             CSVWriter writer = null;
