@@ -1,0 +1,13 @@
+{
+    "network description": "pricing-data/experiments/network_no_momentum.json",
+    "training data": "pricing-data/train.csv",
+    "validation data": "pricing-data/valid.csv",
+    "epochs": 5000,
+    "trained network": "pricing-data/results/no_momentum_learned.json",
+    "cost function": "Quadratic",
+    "initialize": true,
+    "normalize": false,
+    "learning log file": "pricing-data/results/no_momentum_error.csv",
+    "validation steps": 100,
+    "gnuplot": false
+}
