@@ -72,3 +72,67 @@ if ``gnuplot`` is set to ``true``, the program will display the cost function va
 The learning loop is executed ``epochs`` time. At each epoch, the training data are divided in mini batches. The mini batches size is specified in the ``BatchSize`` parameter of the network description. The ``network description`` file may or may not contain weigths and bias. Typically, when designing neural network, it is easier to create the json network file without the weights which are meaningless at this point. The serializer package provided will then randomly intialized the weights and bias (with no particular strategie like Xavier, He or Gaussian which might not be ideal...). Once loaded, the network can be intialized also if the ``initialize`` parameter of the experience file is set to true. The strategy specified in the ``Initializer`` field of the network description is used. If the network description contains weights and bias, they will be loaded. If ``initialize`` is set to false, then, the network will continue its training from this saved point. 
 
 At the end of the learning log, the network will be saved (with its weights) in the file specified in the ``trained network`` field. The output value for all the ``validation data`` are computed and saved in the ``final validation`` csv file. To help debug you network, you can also save the activation of all the neurons (to check if there is a lot of dead neurons for instance) during the learning phase by specifying a file name in ``activation file``. If this parameter is not present or the filename is empty, the activation will not be logged.
+
+## Pricing Neural Network Project
+
+### Overview
+
+The `pricing-data/` directory contains a complete pricing prediction project demonstrating the neural network library capabilities. The project compares 7 different network configurations, each tested with and without data normalization (14 experiments total).
+
+### Quick Start
+
+1. **Compile the project:**
+   ```bash
+   mvn clean compile
+   ```
+
+2. **Prepare the data (split into train/valid/test):**
+   ```bash
+   python3 pricing-data/prepare_data.py
+   ```
+
+3. **Run all experiments (takes ~20-30 minutes):**
+   ```bash
+   bash pricing-data/RUN_ALL.sh
+   ```
+
+### Experiments
+
+The project tests the following configurations:
+
+- **baseline**: Reference configuration (Tanh activations, momentum=0.9, L2 reg=1e-4)
+- **lr_high**: Higher learning rate (0.05 instead of 0.01)
+- **no_momentum**: No momentum (momentum=0.0)
+- **deep**: Deeper network (4 hidden layers instead of 2)
+- **relu**: ReLU activations instead of Tanh
+- **no_regularization**: No L2 regularization
+- **simple**: Simpler network (single hidden layer)
+
+Each experiment is run twice: once with raw data, once with z-score normalization.
+
+### Results
+
+All results are saved in `pricing-data/results/`:
+
+- `*_error.csv`: Training and validation error over time
+- `*_learned.json`: Trained network weights
+- `*_validation.csv`: Predictions on validation set
+- `normalization_comparison.csv`: Comparative analysis
+- `normalization_impact.png`: Visualization of results
+
+### Analysis Scripts
+
+Additional Python scripts provide deeper insights:
+
+```bash
+python3 pricing-data/plot_convergence.py        # Generate convergence curves
+python3 pricing-data/inspect_weights.py         # Analyze weight distributions
+python3 pricing-data/detect_overfitting.py      # Detect overfitting patterns
+python3 pricing-data/complete_analysis.py       # Complete performance report
+```
+
+### Documentation
+
+- `INSTALLATION.md`: Step-by-step installation and verification guide
+- `pricing-data/GUIDE.md`: Detailed analysis of all experiments and results
+

@@ -14,6 +14,7 @@
 /home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/apprentissage-auto/Projet/Students/src/main/java/fr/ensimag/deep/trainingConsole/params/CostFunctionFactory.java
 /home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/apprentissage-auto/Projet/Students/src/main/java/fr/ensimag/deep/serialization/json/SerializedLayer.java
 /home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/apprentissage-auto/Projet/Students/src/main/java/fr/ensimag/deep/trainingConsole/Main.java
+/home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/apprentissage-auto/Projet/Students/src/main/java/fr/ensimag/deep/utils/DataNormalizer.java
 /home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/apprentissage-auto/Projet/Students/src/main/java/fr/ensimag/deep/trainer/dataShufflers/UniformShuffler.java
 /home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/apprentissage-auto/Projet/Students/src/main/java/fr/ensimag/deep/serialization/json/FixedLearningRateParameter.java
 /home/bireet/Bureau/ENSIMAG/3A/apprentissage_auto/apprentissage-auto/Projet/Students/src/main/java/fr/ensimag/deep/NeuralNetwork.java

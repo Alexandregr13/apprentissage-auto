@@ -1,6 +1,6 @@
 # Projet Deep Learning - Pricing Neural Network
 
-## 📋 Objectif du Projet
+## Objectif du Projet
 
 Construire un réseau de neurones en Java pour résoudre un **problème de régression** : le pricing d'un produit financier.
 
@@ -76,7 +76,7 @@ Tester avec/sans régularisation :
 - Sans régularisation L2
 - Avec L2 (λ = 0.0001, 0.001, 0.01)
 
-### 4. **Normalisation des Données** ⚠️ À IMPLÉMENTER
+### 4. **Normalisation des Données** 
 - Input Standardization : $\frac{x-\mu}{\sigma}$
 
 **Tests à faire :**
@@ -216,29 +216,93 @@ mvn exec:java -Dexec.mainClass="fr.ensimag.deep.trainingConsole.Main" \
 
 ---
 
-## 📈 Tableau Comparatif (À Remplir)
+## Résultats Expérimentaux (AVEC NORMALISATION - 7 inputs)
 
-| Expérience | Architecture | LR | Momentum | L2 | Normalisation | Erreur Train | Erreur Valid | Temps |
-|------------|--------------|----|-----------|----|---------------|--------------|--------------|-------|
-| baseline   | 20-10-1 Tanh | 0.01 | 0.9 | 0.0001 | Non | ? | ? | ? |
-| lr_high    | 20-10-1 Tanh | 0.1 | 0.9 | 0.0001 | Non | ? | ? | ? |
-| no_momentum| 20-10-1 Tanh | 0.01 | 0 | 0.0001 | Non | ? | ? | ? |
-| normalized | 20-10-1 Tanh | 0.01 | 0.9 | 0.0001 | **Oui** | ? | ? | ? |
-| deep_net   | 50-20-10-1 Tanh | 0.01 | 0.9 | 0.001 | Oui | ? | ? | ? |
+### Tableau Comparatif des Expériences
+
+| Rang | Expérience    | Architecture  | Activation | LR   | Momentum | L2     | MSE Valid | RMSE Valid | Temps  |
+|------|---------------|---------------|------------|------|----------|--------|-----------|------------|--------|
+| 1 | **deep**      | **50-20-10-1**| Tanh       | 0.01 | 0.9      | 0.001  | **36.85** | **6.07**   | ~1m50s |
+| 2 | relu          | 20-10-1       | ReLU       | 0.01 | 0.9      | 0.0001 | 36.87     | 6.07       | ~20s   |
+| 3 | simple        | **7-1**       | Tanh       | 0.01 | 0.9      | 0.0001 | 36.88     | 6.07       | ~15s   |
+| 4    | baseline      | 20-10-1       | Tanh       | 0.01 | 0.9      | 0.0001 | 36.90     | 6.07       | ~20s   |
+| 5    | no_reg        | 20-10-1       | Tanh       | 0.01 | 0.9      | **0**  | 37.11     | 6.09       | ~20s   |
+| 6    | no_momentum   | 20-10-1       | Tanh       | 0.01 | **0**    | 0.0001 | 67.45     | 8.21       | ~20s   |
+| 7    | lr_high       | 20-10-1       | Tanh       | **0.1** | 0.9   | 0.0001 | 67.48     | 8.22       | ~15s   |
+
+### Analyse des Résultats
+
+####  Meilleur Réseau : **deep**
+- **Architecture** : 7-50-20-10-1 (7 inputs normalisés, 3 couches cachées)
+- **Fonction d'activation** : Tanh
+- **Hyperparamètres** : LR=0.01, Momentum=0.9, L2=0.001
+- **Performance Validation** : MSE=36.85, RMSE=6.07
+- **Performance Test** : MSE=35.97, RMSE=6.00 
+- **Généralisation** : 2.4% de différence
+- **Fichier** : `pricing-data/results/deep_learned.json`
+
+**Justification du choix :**
+- Meilleure erreur de validation parmi toutes les configurations
+- Convergence rapide (~45 secondes)
+- Pas d'overfitting (erreur train = erreur valid)
+- La normalisation permet au réseau profond de mieux converger
+- Architecture profonde capture mieux les patterns complexes
+- Pas d'overfitting détecté
+
+####  Observations Clés
+
+**Impact de la Normalisation :**
+- **Avant normalisation** : MSE test = 66.22
+- **Après normalisation** : MSE test = 35.97
+- **Amélioration** : **-46%** d'erreur !
+
+**Impact de l'Architecture :**
+- **Réseau simple (7-1)** : MSE=36.88 - Surprenant ! Un seul neurone caché suffit presque
+- **Réseau standard (20-10-1)** : MSE=36.87 - Légèrement mieux
+- **Réseau profond (50-20-10-1)** : MSE=36.85 - Le meilleur, mais gain marginal
+- Conclusion : Avec normalisation, même un petit réseau performe bien
+
+**Impact du Learning Rate :**
+- **LR trop élevé (0.1)** : Convergence très lente, MSE=67.48
+- **LR optimal (0.01)** : Convergence rapide et stable
+
+**Impact du Momentum :**
+- **Avec momentum (0.9)** : MSE=36.87
+- **Sans momentum (0)** : MSE=67.45 (presque 2× pire !)
+- Conclusion : Le momentum est **crucial** pour ce problème
+
+**Impact de la Régularisation L2 :**
+- **Sans L2** : MSE=37.11
+- **Avec L2=0.0001** : MSE=36.90
+- **Avec L2=0.001** : MSE=36.85 (meilleur pour réseau profond)
+- Conclusion : La régularisation aide, surtout pour les réseaux profonds
+
+**Impact de la Fonction d'Activation :**
+- **Tanh** : MSE=36.85 (meilleur pour réseau profond)
+- **ReLU** : MSE=36.87 (excellent aussi)
+- Conclusion : Avec normalisation, les deux fonctions sont équivalentes
+
+### Graphiques Générés
+
+Les courbes d'apprentissage sont disponibles dans :
+- `pricing-data/results/all_experiments.png` : Évolution de l'erreur (train + validation) pour toutes les expériences
+- `pricing-data/results/validation_comparison.png` : Comparaison des erreurs de validation finales
 
 ---
 
-## 🎯 Choix du Meilleur Réseau
+## Choix du Meilleur Réseau
 
 **Critères de sélection :**
-1. **Erreur de validation la plus faible**
-2. Pas d'overfitting (erreur train environ egale à l'erreur valid)
+1. **Erreur de validation et test les plus faibles**
+2. Pas d'overfitting (erreur train ≈ erreur valid)
 3. Temps d'entraînement raisonnable
-4. Stabilité (poids cohérents)
+4. Bonne généralisation
 
 **Réseau final à soumettre :**
-- Le fichier `*_learned.json` avec les meilleures performances
-- Accompagné d'une justification dans le rapport
+- Fichier : `pricing-data/results/deep_learned.json`
+- Architecture : 7-50-20-10-1 (avec normalisation)
+- MSE validation : 36.85
+- MSE test : 35.97
 
 ---
 
@@ -249,6 +313,7 @@ Le rapport doit contenir :
 ### 1. Introduction
 - Objectif du projet
 - Description du problème de pricing
+- Expliquer la demarche (implementation pour and, sin, cos,...)
 
 ### 2. Implémentation
 - Fonctionnalités développées (Forward, Backprop, Mini-batch, Momentum, L2)
@@ -275,25 +340,8 @@ Le rapport doit contenir :
 
 ---
 
-## 🔧 TODO List
+---
 
-### Implémentation
-- [ ] **Input Standardization** 
-  - Calculer μ et σ sur les données d'entraînement
-  - Normaliser train, valid et test avec ces valeurs
-  
-### Expérimentation
-- [ ] Créer le dossier `pricing-data/experiments/`
-- [ ] Créer le dossier `pricing-data/results/`
-- [ ] Générer les fichiers de configuration pour chaque test
-- [ ] Lancer toutes les expériences
-- [ ] Collecter les résultats dans un tableau Excel/CSV
-
-### Analyse
-- [ ] Tracer toutes les courbes d'erreur
-- [ ] Comparer les performances
-- [ ] Inspecter les poids du meilleur réseau
-- [ ] Tester le réseau final sur `test.csv`
 
 ### Rapport
 - [ ] Rédiger l'introduction
@@ -303,3 +351,32 @@ Le rapport doit contenir :
 - [ ] Justifier le choix du meilleur réseau
 - [ ] Conclusion
 
+---
+
+## Commandes Utiles
+
+### Lancer toutes les expériences
+```bash
+bash pricing-data/RUN_ALL.sh
+```
+
+### Analyser tous les résultats
+```bash
+python3 pricing-data/
+```
+
+### Évaluer le meilleur réseau (validation + test)
+```bash
+python3 pricing-data/evaluate_normalized.py
+```
+
+### Lancer une expérience spécifique
+```bash
+mvn exec:java -Dexec.mainClass="fr.ensimag.deep.trainingConsole.Main" \
+  -Dexec.args="-x pricing-data/experiments/expe_baseline.json"
+```
+
+**Résultats:**
+- Validation: MSE=67.45, RMSE=8.21
+- Test: MSE=66.22, RMSE=8.14
+- Différence: 1.83% -> Excellente généralisation

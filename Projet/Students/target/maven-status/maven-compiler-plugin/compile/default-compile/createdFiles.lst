@@ -19,6 +19,7 @@ fr/ensimag/deep/trainer/costFunction/QuadraticCostFunction.class
 fr/ensimag/deep/activators/Tanh.class
 fr/ensimag/deep/trainer/operators/LearnCommand.class
 fr/ensimag/deep/layers/StandardLayer.class
+fr/ensimag/deep/utils/DataNormalizer.class
 fr/ensimag/deep/serialization/json/InverseDecayLearningRateParameter.class
 fr/ensimag/deep/examples/AndTrainerFromFile.class
 fr/ensimag/deep/serialization/json/FixedLearningRateParameter.class

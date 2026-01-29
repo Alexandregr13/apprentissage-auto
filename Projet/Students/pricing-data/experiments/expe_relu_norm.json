@@ -1,0 +1,14 @@
+{
+    "network description": "pricing-data/experiments/network_relu.json",
+    "training data": "pricing-data/train.csv",
+    "validation data": "pricing-data/valid.csv",
+    "epochs": 5000,
+    "trained network": "pricing-data/results/relu_norm_learned.json",
+    "cost function": "Quadratic",
+    "initialize": true,
+    "learning log file": "pricing-data/results/relu_norm_error.csv",
+    "validation steps": 100,
+    "final validation": "pricing-data/results/relu_norm_validation.csv",
+    "activation file": "pricing-data/results/relu_norm_activation.csv",
+    "gnuplot": false
+}

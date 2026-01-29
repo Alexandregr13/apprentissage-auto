@@ -1,0 +1,14 @@
+{
+    "network description": "pricing-data/experiments/network_lr_high.json",
+    "training data": "pricing-data/train.csv",
+    "validation data": "pricing-data/valid.csv",
+    "epochs": 5000,
+    "trained network": "pricing-data/results/lr_high_norm_learned.json",
+    "cost function": "Quadratic",
+    "initialize": true,
+    "normalize": true,
+    "learning log file": "pricing-data/results/lr_high_norm_error.csv",
+    "validation steps": 100,
+    "final validation": "pricing-data/results/lr_high_norm_validation.csv",
+    "gnuplot": false
+}
