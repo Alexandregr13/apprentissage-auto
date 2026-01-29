@@ -1,0 +1,16 @@
+{
+    "network description": "Examples/Cos/cos_network.json",
+    "training data" : "Examples/Cos/cos_train.csv",
+    "validation data" : "Examples/Cos/cos_valid.csv",
+    "epochs" : 2000,
+    "trained network" : "cos_learned_normalized.json",
+    "cost function" : "Quadratic",
+    "initialize" : true,
+    "normalize" : true,
+    "normalizer file" : "cos_normalizer.json",
+    "learning log file" : "cos_error_normalized.csv",
+    "validation steps" : 50,
+    "final validation" : "cos_final_validation_normalized.csv",
+    "activation file" : "cos_activation_normalized.csv",
+    "gnuplot" : false
+}
