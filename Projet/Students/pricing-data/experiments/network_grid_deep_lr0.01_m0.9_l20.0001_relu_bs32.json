@@ -1,0 +1,49 @@
+{
+  "InputSize": 7,
+  "BatchSize": 32,
+  "Initializer": "Xavier",
+  "Layers": [
+    {
+      "Size": 30,
+      "ActivatorType": "Relu",
+      "Type": "Standard",
+      "GradientAdjustmentParameters": {
+        "Type": "Momentum",
+        "LearningRate": 0.01,
+        "Momentum": 0.9
+      },
+      "L2Regularization": 0.0001
+    },
+    {
+      "Size": 20,
+      "ActivatorType": "Relu",
+      "Type": "Standard",
+      "GradientAdjustmentParameters": {
+        "Type": "Momentum",
+        "LearningRate": 0.01,
+        "Momentum": 0.9
+      },
+      "L2Regularization": 0.0001
+    },
+    {
+      "Size": 10,
+      "ActivatorType": "Relu",
+      "Type": "Standard",
+      "GradientAdjustmentParameters": {
+        "Type": "Momentum",
+        "LearningRate": 0.01,
+        "Momentum": 0.9
+      },
+      "L2Regularization": 0.0001
+    },
+    {
+      "Size": 1,
+      "ActivatorType": "Identity",
+      "Type": "Standard",
+      "GradientAdjustmentParameters": {
+        "Type": "FixedLearningRate",
+        "LearningRate": 0.01
+      }
+    }
+  ]
+}

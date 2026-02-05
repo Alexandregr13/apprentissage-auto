@@ -1,0 +1,15 @@
+{
+  "network description": "pricing-data/experiments/network_grid_tiny_lr0.01_m0.9_l20.001_tanh_bs16.json",
+  "training data": "pricing-data/train.csv",
+  "validation data": "pricing-data/valid.csv",
+  "epochs": 5000,
+  "trained network": "pricing-data/results/grid_tiny_lr0.01_m0.9_l20.001_tanh_bs16_learned.json",
+  "cost function": "Quadratic",
+  "initialize": true,
+  "normalize": true,
+  "normalizer file": "pricing-data/results/grid_tiny_lr0.01_m0.9_l20.001_tanh_bs16_normalizer.json",
+  "learning log file": "pricing-data/results/grid_tiny_lr0.01_m0.9_l20.001_tanh_bs16_error.csv",
+  "validation steps": 100,
+  "final validation": "pricing-data/results/grid_tiny_lr0.01_m0.9_l20.001_tanh_bs16_validation.csv",
+  "gnuplot": false
+}

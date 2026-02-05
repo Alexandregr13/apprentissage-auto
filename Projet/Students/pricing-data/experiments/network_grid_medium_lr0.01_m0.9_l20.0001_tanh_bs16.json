@@ -1,0 +1,38 @@
+{
+  "InputSize": 7,
+  "BatchSize": 16,
+  "Initializer": "Xavier",
+  "Layers": [
+    {
+      "Size": 30,
+      "ActivatorType": "Tanh",
+      "Type": "Standard",
+      "GradientAdjustmentParameters": {
+        "Type": "Momentum",
+        "LearningRate": 0.01,
+        "Momentum": 0.9
+      },
+      "L2Regularization": 0.0001
+    },
+    {
+      "Size": 15,
+      "ActivatorType": "Tanh",
+      "Type": "Standard",
+      "GradientAdjustmentParameters": {
+        "Type": "Momentum",
+        "LearningRate": 0.01,
+        "Momentum": 0.9
+      },
+      "L2Regularization": 0.0001
+    },
+    {
+      "Size": 1,
+      "ActivatorType": "Identity",
+      "Type": "Standard",
+      "GradientAdjustmentParameters": {
+        "Type": "FixedLearningRate",
+        "LearningRate": 0.01
+      }
+    }
+  ]
+}
