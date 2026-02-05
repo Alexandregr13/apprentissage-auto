@@ -1,0 +1,15 @@
+{
+  "network description": "pricing-data/experiments/network_small_prices.json",
+  "training data": "pricing-data/train_small.csv",
+  "validation data": "pricing-data/valid_small.csv",
+  "epochs": 10000,
+  "trained network": "pricing-data/results/small_prices_learned.json",
+  "cost function": "Quadratic",
+  "initialize": true,
+  "normalize": true,
+  "normalizer file": "pricing-data/results/small_prices_normalizer.json",
+  "learning log file": "pricing-data/results/small_prices_error.csv",
+  "validation steps": 100,
+  "final validation": "pricing-data/results/small_prices_validation.csv",
+  "gnuplot": false
+}

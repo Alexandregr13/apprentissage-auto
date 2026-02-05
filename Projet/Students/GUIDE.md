@@ -216,93 +216,150 @@ mvn exec:java -Dexec.mainClass="fr.ensimag.deep.trainingConsole.Main" \
 
 ---
 
-## Résultats Expérimentaux (AVEC NORMALISATION - 7 inputs)
+## Résultats Expérimentaux (14 expériences - 7 inputs)
 
-### Tableau Comparatif des Expériences
+### Tableau Comparatif des Expériences (AVEC normalisation)
 
-| Rang | Expérience    | Architecture  | Activation | LR   | Momentum | L2     | MSE Valid | RMSE Valid | Temps  |
-|------|---------------|---------------|------------|------|----------|--------|-----------|------------|--------|
-| 1 | **deep**      | **50-20-10-1**| Tanh       | 0.01 | 0.9      | 0.001  | **36.85** | **6.07**   | ~1m50s |
-| 2 | relu          | 20-10-1       | ReLU       | 0.01 | 0.9      | 0.0001 | 36.87     | 6.07       | ~20s   |
-| 3 | simple        | **7-1**       | Tanh       | 0.01 | 0.9      | 0.0001 | 36.88     | 6.07       | ~15s   |
-| 4    | baseline      | 20-10-1       | Tanh       | 0.01 | 0.9      | 0.0001 | 36.90     | 6.07       | ~20s   |
-| 5    | no_reg        | 20-10-1       | Tanh       | 0.01 | 0.9      | **0**  | 37.11     | 6.09       | ~20s   |
-| 6    | no_momentum   | 20-10-1       | Tanh       | 0.01 | **0**    | 0.0001 | 67.45     | 8.21       | ~20s   |
-| 7    | lr_high       | 20-10-1       | Tanh       | **0.1** | 0.9   | 0.0001 | 67.48     | 8.22       | ~15s   |
+| Rang | Expérience | Architecture | Activation | LR | Momentum | L2 | **MSE Valid** | RMSE | Temps |
+|------|------------|--------------|------------|----|----------|----|---------------|------|-------|
+| 1 | **baseline_norm** | 7-20-10-1 | Tanh | 0.01 | 0.9 | 0.0001 | **0.49** | 0.70 | ~20s |
+| 2 | **no_regularization_norm** | 7-20-10-1 | Tanh | 0.01 | 0.9 | **0** | **0.49** | 0.70 | ~20s |
+| 3 | relu_norm | 7-20-10-1 | ReLU | 0.01 | 0.9 | 0.0001 | **0.51** | 0.72 | ~29s |
+| 4 | no_momentum_norm | 7-20-10-1 | Tanh | 0.01 | **0** | 0.0001 | **0.51** | 0.72 | ~20s |
+| 5 | deep_norm | 7-50-20-10-1 | Tanh | 0.01 | 0.9 | 0.001 | **0.68** | 0.83 | ~1m48s |
+| 6 | simple_norm | 7-7-1 | Tanh | 0.01 | 0.9 | 0.0001 | **0.69** | 0.83 | ~10s |
+| 7 | lr_high_norm | 7-20-10-1 | Tanh | **0.1** | 0.9 | 0.0001 | 5.42 | 2.33 | ~20s |
+
+### Tableau Comparatif (SANS normalisation)
+
+| Rang | Expérience | MSE Valid | RMSE |
+|------|------------|-----------|------|
+| 1 | relu | 18.43 | 4.29 |
+| 2 | deep | 18.43 | 4.29 |
+| 3 | no_momentum | 18.44 | 4.29 |
+| 4 | baseline | 18.46 | 4.30 |
+| 5 | no_regularization | 18.49 | 4.30 |
+| 6 | lr_high | 18.73 | 4.33 |
+| 7 | simple | 19.32 | 4.40 |
+
+**Toutes les expériences sans normalisation ont des MSE entre 18-19 (très cohérent).**
 
 ### Analyse des Résultats
 
-####  Meilleur Réseau : **deep**
-- **Architecture** : 7-50-20-10-1 (7 inputs normalisés, 3 couches cachées)
-- **Fonction d'activation** : Tanh
-- **Hyperparamètres** : LR=0.01, Momentum=0.9, L2=0.001
-- **Performance Validation** : MSE=36.85, RMSE=6.07
-- **Performance Test** : MSE=35.97, RMSE=6.00 
-- **Généralisation** : 2.4% de différence
-- **Fichier** : `pricing-data/results/deep_learned.json`
+#### 🏆 Meilleur Réseau : **baseline_norm** ou **no_regularization_norm**
 
-**Justification du choix :**
-- Meilleure erreur de validation parmi toutes les configurations
-- Convergence rapide (~45 secondes)
-- Pas d'overfitting (erreur train = erreur valid)
-- La normalisation permet au réseau profond de mieux converger
-- Architecture profonde capture mieux les patterns complexes
-- Pas d'overfitting détecté
+Deux réseaux ex-aequo avec MSE = 0.49 :
 
-####  Observations Clés
+**Configuration recommandée : no_regularization_norm**
+- **Architecture** : 7-20-10-1 (2 couches cachées)
+- **Activation** : Tanh
+- **Hyperparamètres** : LR=0.01, Momentum=0.9, L2=0 (pas de régularisation)
+- **Performance Validation** : MSE=0.49, RMSE=0.70
+- **Temps d'entraînement** : ~20 secondes
+- **Fichier** : `pricing-data/results/no_regularization_norm_learned.json`
 
-**Impact de la Normalisation :**
-- **Avant normalisation** : MSE test = 66.22
-- **Après normalisation** : MSE test = 35.97
-- **Amélioration** : **-46%** d'erreur !
+**Justification :**
+- Performance identique à baseline_norm
+- Plus simple (pas de régularisation L2)
+- Principe du rasoir d'Ockham : préférer la solution la plus simple
 
-**Impact de l'Architecture :**
-- **Réseau simple (7-1)** : MSE=36.88 - Surprenant ! Un seul neurone caché suffit presque
-- **Réseau standard (20-10-1)** : MSE=36.87 - Légèrement mieux
-- **Réseau profond (50-20-10-1)** : MSE=36.85 - Le meilleur, mais gain marginal
-- Conclusion : Avec normalisation, même un petit réseau performe bien
+#### 📊 Observations Clés (Découvertes via HiPlot)
 
-**Impact du Learning Rate :**
-- **LR trop élevé (0.1)** : Convergence très lente, MSE=67.48
-- **LR optimal (0.01)** : Convergence rapide et stable
+**1. Impact MASSIF de la Normalisation ⭐⭐⭐**
+- **Sans normalisation** : MSE moyen = 18.5
+- **Avec normalisation** : MSE moyen = 0.6
+- **Amélioration** : **-97%** d'erreur !
+- **Conclusion** : La normalisation est **LE facteur décisif**. Sans elle, impossible d'obtenir de bons résultats.
 
-**Impact du Momentum :**
-- **Avec momentum (0.9)** : MSE=36.87
-- **Sans momentum (0)** : MSE=67.45 (presque 2× pire !)
-- Conclusion : Le momentum est **crucial** pour ce problème
+**2. Architecture : Impact Marginal (avec normalisation)**
+- **Simple (7-7-1)** : MSE = 0.69
+- **Standard (7-20-10-1)** : MSE = 0.49
+- **Deep (7-50-20-10-1)** : MSE = 0.68
+- **Conclusion** : Avec normalisation, même un réseau minimal (1 couche cachée) performe très bien. Pas besoin de complexité excessive.
 
-**Impact de la Régularisation L2 :**
-- **Sans L2** : MSE=37.11
-- **Avec L2=0.0001** : MSE=36.90
-- **Avec L2=0.001** : MSE=36.85 (meilleur pour réseau profond)
-- Conclusion : La régularisation aide, surtout pour les réseaux profonds
+**3. Momentum : Devient Optionnel (avec normalisation)**
+- **Avec momentum (0.9)** : MSE = 0.49
+- **Sans momentum (0)** : MSE = 0.51 (seulement +4%)
+- **Conclusion** : Contrairement aux attentes, le momentum n'est plus critique avec normalisation. La normalisation stabilise l'optimisation.
 
-**Impact de la Fonction d'Activation :**
-- **Tanh** : MSE=36.85 (meilleur pour réseau profond)
-- **ReLU** : MSE=36.87 (excellent aussi)
-- Conclusion : Avec normalisation, les deux fonctions sont équivalentes
+**4. Régularisation L2 : Inutile (avec normalisation)**
+- **Sans L2 (0)** : MSE = 0.49
+- **Avec L2 (0.0001)** : MSE = 0.49
+- **Avec L2 (0.001)** : MSE = 0.68
+- **Conclusion** : La régularisation n'apporte rien, voire dégrade légèrement. La normalisation prévient déjà l'overfitting.
 
-### Graphiques Générés
+**5. Activation : Tanh ≈ ReLU (avec normalisation)**
+- **Tanh** : MSE = 0.49
+- **ReLU** : MSE = 0.51
+- **Conclusion** : Les deux fonctions sont équivalentes avec normalisation.
 
-Les courbes d'apprentissage sont disponibles dans :
-- `pricing-data/results/all_experiments.png` : Évolution de l'erreur (train + validation) pour toutes les expériences
-- `pricing-data/results/validation_comparison.png` : Comparaison des erreurs de validation finales
+**6. Learning Rate : Toujours Critique**
+- **LR = 0.01** : MSE = 0.49-0.69 ✅
+- **LR = 0.1** : MSE = 5.42 ❌ (10× pire)
+- **Conclusion** : Même avec normalisation, un LR trop élevé cause divergence.
+
+### Graphiques et Visualisations
+
+**HiPlot (interactif)** :
+- `pricing-data/results/hiplot_visualization.html` : Exploration interactive de tous les hyperparamètres
+- Permet de filtrer, comparer et identifier visuellement les patterns
+
+**Courbes d'apprentissage** :
+- `pricing-data/results/*_convergence.png` : Évolution de l'erreur pour chaque expérience
+- `pricing-data/results/normalization_impact.png` : Comparaison avec/sans normalisation
+
+---
+
+## Visualisation Interactive avec HiPlot
+
+**HiPlot** (Facebook Research) permet d'explorer visuellement les 14 expériences avec de multiples hyperparamètres.
+
+### Utilisation
+
+```bash
+pip install hiplot
+bash pricing-data/run_hiplot.sh
+```
+
+Ouvre `pricing-data/results/hiplot_visualization.html` dans le navigateur.
+
+### Interface
+
+**Parallel Coordinates Plot:**
+- Chaque ligne = une expérience
+- Chaque axe = un hyperparamètre ou métrique
+- Cliquer-glisser sur un axe pour filtrer
+
+**Axes importants:** `validation_mse`, `normalized`, `learning_rate`, `momentum`, `architecture`
+
+**Découvertes clés via HiPlot:**
+- Impact massif de la normalisation (-97% d'erreur)
+- Momentum optionnel avec normalisation
+- Régularisation L2 inutile
+- Architecture simple suffit
+
+Voir `HIPLOT_README.md` pour plus de détails.
 
 ---
 
 ## Choix du Meilleur Réseau
 
 **Critères de sélection :**
-1. **Erreur de validation et test les plus faibles**
-2. Pas d'overfitting (erreur train ≈ erreur valid)
+1. **Erreur de validation la plus faible**
+2. Simplicité (rasoir d'Ockham)
 3. Temps d'entraînement raisonnable
-4. Bonne généralisation
+4. Pas d'overfitting
 
-**Réseau final à soumettre :**
-- Fichier : `pricing-data/results/deep_learned.json`
-- Architecture : 7-50-20-10-1 (avec normalisation)
-- MSE validation : 36.85
-- MSE test : 35.97
+**Réseau final recommandé :**
+- **Fichier** : `pricing-data/results/no_regularization_norm_learned.json`
+- **Architecture** : 7-20-10-1 (avec normalisation)
+- **Hyperparamètres** : LR=0.01, Momentum=0.9, L2=0
+- **MSE validation** : 0.49
+- **RMSE** : 0.70
+- **Temps** : 20 secondes
+
+**Alternative (identique) :**
+- `pricing-data/results/baseline_norm_learned.json` (MSE=0.49)
 
 ---
 
@@ -362,7 +419,26 @@ bash pricing-data/RUN_ALL.sh
 
 ### Analyser tous les résultats
 ```bash
-python3 pricing-data/
+# Comparaison avec/sans normalisation
+python3 pricing-data/compare_normalization.py
+
+# Analyse complète
+python3 pricing-data/complete_analysis.py
+
+# Tracer les courbes de convergence
+python3 pricing-data/plot_convergence.py
+
+# Inspecter les poids (détecter explosion/neurones morts)
+python3 pricing-data/inspect_weights.py
+```
+
+### Visualisation interactive HiPlot
+```bash
+# Lancer HiPlot (installe automatiquement si nécessaire)
+bash pricing-data/run_hiplot.sh
+
+# Ou directement
+python3 pricing-data/hiplot_analysis.py
 ```
 
 ### Évaluer le meilleur réseau (validation + test)

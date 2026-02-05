@@ -1,0 +1,15 @@
+{
+  "network description": "pricing-data/experiments/network_large_prices.json",
+  "training data": "pricing-data/train_large.csv",
+  "validation data": "pricing-data/valid_large.csv",
+  "epochs": 5000,
+  "trained network": "pricing-data/results/large_prices_learned.json",
+  "cost function": "Quadratic",
+  "initialize": true,
+  "normalize": true,
+  "normalizer file": "pricing-data/results/large_prices_normalizer.json",
+  "learning log file": "pricing-data/results/large_prices_error.csv",
+  "validation steps": 100,
+  "final validation": "pricing-data/results/large_prices_validation.csv",
+  "gnuplot": false
+}

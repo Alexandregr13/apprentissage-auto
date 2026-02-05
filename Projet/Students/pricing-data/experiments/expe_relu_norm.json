@@ -6,6 +6,8 @@
     "trained network": "pricing-data/results/relu_norm_learned.json",
     "cost function": "Quadratic",
     "initialize": true,
+    "normalize": true,
+    "normalizer file": "pricing-data/results/relu_normalizer.json",
     "learning log file": "pricing-data/results/relu_norm_error.csv",
     "validation steps": 100,
     "final validation": "pricing-data/results/relu_norm_validation.csv",
