@@ -1,458 +1,254 @@
 # Projet Deep Learning - Pricing Neural Network
 
-## Objectif du Projet
+## Vue d'ensemble
 
-Construire un réseau de neurones en Java pour résoudre un **problème de régression** : le pricing d'un produit financier.
+Ce projet implémente un réseau de neurones pour prédire les prix dans un problème de pricing.
+Deux phases d'expérimentation ont été réalisées :
+1. **Phase 1 (14 expériences)** : Analyse comparative baseline avec/sans normalisation
+2. **Phase 2 (68 expériences)** : Grid search systématique pour optimisation des hyperparamètres
 
-- **Analyse comparative** : tester différentes configurations et choisir la meilleure
-- Le réseau final sérialisé (meilleure performance)
+## Installation
 
----
-
-## Fonctionnalités Implémentées
-
-### Hands-on 1 : Forward Propagation
-- Propagation avant dans le réseau
-- Validation sur la fonction AND
-- Refactoring pour réduire les instanciations
-
-### Hands-on 2 : Backpropagation
-- Chargement/Sauvegarde de réseaux (JSON)
-- Backpropagation et descente de gradient
-- Tests sur AND, Sin, Cos
-
-### Hands-on 3 : Mini-batch & Momentum
-- **Mini-batch** : Entraînement par paquets (taille configurable)
-- **Momentum** : Accélération du gradient (implémenté dans `StandardLayer`)
-- Tests comparatifs : `and_expe.json` vs `and_expe_momentum.json`
-
-### Hands-on 4 : Régularisation
-- **L2 Regularization** : Pénalisation des poids pour éviter l'overfitting
-- Configurable par couche dans les fichiers JSON
-
-### Pricing Neural Network (6h)
-- Données disponibles dans `pricing-data/`
-- **À faire** : Entraîner et comparer différents réseaux
-
----
-
-## Plan d'Expérimentation (Tests à Réaliser)
-
-Le rapport doit contenir une **analyse comparative** de plusieurs configurations de réseaux. Voici les tests à effectuer :
-
-### 1. **Architecture du Réseau**
-Tester différentes configurations :
-- Nombre de couches cachées : 1, 2, 3 couches
-- Taille des couches : 10, 20, 50 neurones
-- Fonctions d'activation : `Tanh`, `Relu`, `LeakyRelu`, `Sigmoid`
-
-**Fichiers à créer :**
-```
-pricing-data/experiments/
-├── network_1layer_20neurons.json
-├── network_2layers_10_10.json
-├── network_3layers_20_10_5.json
-└── ...
-```
-
-### 2. **Hyperparamètres d'Apprentissage**
-Comparer l'impact de :
-- **Learning Rate** : 0.001, 0.01, 0.1
-- **Batch Size** : 16, 32, 64, 128
-- **Momentum** : 0 (sans), 0.9, 0.95
-- **Epochs** : 1000, 5000, 10000
-
-**Fichiers à créer :**
-```
-pricing-data/experiments/
-├── expe_lr_0.001.json
-├── expe_lr_0.01.json
-├── expe_momentum_0.9.json
-└── ...
-```
-
-### 3. **Régularisation**
-Tester avec/sans régularisation :
-- Sans régularisation L2
-- Avec L2 (λ = 0.0001, 0.001, 0.01)
-
-### 4. **Normalisation des Données** 
-- Input Standardization : $\frac{x-\mu}{\sigma}$
-
-**Tests à faire :**
-- Réseau **sans** normalisation
-- Réseau **avec** normalisation (devrait converger beaucoup plus vite)
-
-### 5. **Initialisation des Poids**
-Comparer les initialiseurs :
-- `Xavier` (recommandé pour Tanh/Sigmoid)
-- `He` (recommandé pour ReLU)
-- `Gaussian` (aléatoire standard)
-
----
-
-## Métriques à Analyser
-
-Pour **chaque expérience**, collecter et comparer :
-
-### 1. **Courbes d'Erreur**
-- Tracer `Training Error` vs `Validation Error` (fichiers `.csv` générés)
-- **Vérifier** :
-  - Convergence : L'erreur diminue-t-elle ?
-  - Overfitting : L'erreur de validation remonte-t-elle ?
-  - Vitesse : Combien d'époques pour atteindre 1% d'erreur ?
-
-**Commande pour tracer :**
 ```bash
-python Examples/TrainingConsole/plot.py
+mvn clean compile
 ```
-
-### 2. **Erreur Finale**
-- Erreur sur le jeu de **validation**
-- Erreur sur le jeu de **test** (pricing-data/test.csv)
-
-### 3. **Inspection des Poids**
-Ouvrir les fichiers `*_learned.json` et vérifier :
-- Les poids sont-ils dans un range raisonnable (-10, +10) ?
-- Ou explosent-ils (1e6) → instabilité
-- Sont-ils trop petits (~0) → le réseau n'a rien appris
-
-### 4. **Temps d'Entraînement**
-- Noter le temps d'exécution (visible dans les logs Maven)
-
----
-
-## Structure des Données de Test
-
-```
-pricing-data/
-├── train.csv          # Données d'entraînement (70%)
-├── valid.csv          # Données de validation (15%)
-├── test.csv           # Données de test final (15%)
-└── experiments/       # Vos fichiers de configuration
-    ├── network_*.json
-    └── expe_*.json
-```
-
----
 
 ## Lancer une Expérience
 
-### 1. Créer un fichier de configuration d'expérience
-
-**Exemple : `pricing-data/experiments/expe_baseline.json`**
-```json
-{
-    "network description": "pricing-data/experiments/network_baseline.json",
-    "training data": "pricing-data/train.csv",
-    "validation data": "pricing-data/valid.csv",
-    "epochs": 5000,
-    "trained network": "pricing-data/results/baseline_learned.json",
-    "cost function": "Quadratic",
-    "initialize": true,
-    "learning log file": "pricing-data/results/baseline_error.csv",
-    "validation steps": 100,
-    "final validation": "pricing-data/results/baseline_validation.csv",
-    "activation file": "pricing-data/results/baseline_activation.csv",
-    "gnuplot": false
-}
-```
-
-### 2. Créer le fichier réseau correspondant
-
-**Exemple : `pricing-data/experiments/network_baseline.json`**
-```json
-{
-  "InputSize": 5,
-  "BatchSize": 32,
-  "Initializer": "Xavier",
-  "Layers": [
-    {
-      "Size": 20,
-      "ActivatorType": "Tanh",
-      "Type": "Standard",
-      "GradientAdjustmentParameters": {
-        "Type": "Momentum",
-        "LearningRate": 0.01,
-        "Momentum": 0.9
-      },
-      "L2Regularization": 0.0001
-    },
-    {
-      "Size": 10,
-      "ActivatorType": "Tanh",
-      "Type": "Standard",
-      "GradientAdjustmentParameters": {
-        "Type": "Momentum",
-        "LearningRate": 0.01,
-        "Momentum": 0.9
-      }
-    },
-    {
-      "Size": 1,
-      "ActivatorType": "Identity",
-      "Type": "Standard",
-      "GradientAdjustmentParameters": {
-        "Type": "FixedLearningRate",
-        "LearningRate": 0.01
-      }
-    }
-  ]
-}
-```
-
-### 3. Lancer l'entraînement
-
 ```bash
 mvn exec:java -Dexec.mainClass="fr.ensimag.deep.trainingConsole.Main" \
-  -Dexec.args="-x pricing-data/experiments/expe_baseline.json"
+  -Dexec.args="-x pricing-data/experiments/expe_baseline_norm.json"
 ```
 
-### 4. Analyser les résultats
-
-- Ouvrir `pricing-data/results/baseline_error.csv`
-- Tracer la courbe avec Python/gnuplot
-- Comparer avec les autres expériences
-
----
-
-## Résultats Expérimentaux (14 expériences - 7 inputs)
-
-### Tableau Comparatif des Expériences (AVEC normalisation)
-
-| Rang | Expérience | Architecture | Activation | LR | Momentum | L2 | **MSE Valid** | RMSE | Temps |
-|------|------------|--------------|------------|----|----------|----|---------------|------|-------|
-| 1 | **baseline_norm** | 7-20-10-1 | Tanh | 0.01 | 0.9 | 0.0001 | **0.49** | 0.70 | ~20s |
-| 2 | **no_regularization_norm** | 7-20-10-1 | Tanh | 0.01 | 0.9 | **0** | **0.49** | 0.70 | ~20s |
-| 3 | relu_norm | 7-20-10-1 | ReLU | 0.01 | 0.9 | 0.0001 | **0.51** | 0.72 | ~29s |
-| 4 | no_momentum_norm | 7-20-10-1 | Tanh | 0.01 | **0** | 0.0001 | **0.51** | 0.72 | ~20s |
-| 5 | deep_norm | 7-50-20-10-1 | Tanh | 0.01 | 0.9 | 0.001 | **0.68** | 0.83 | ~1m48s |
-| 6 | simple_norm | 7-7-1 | Tanh | 0.01 | 0.9 | 0.0001 | **0.69** | 0.83 | ~10s |
-| 7 | lr_high_norm | 7-20-10-1 | Tanh | **0.1** | 0.9 | 0.0001 | 5.42 | 2.33 | ~20s |
-
-### Tableau Comparatif (SANS normalisation)
-
-| Rang | Expérience | MSE Valid | RMSE |
-|------|------------|-----------|------|
-| 1 | relu | 18.43 | 4.29 |
-| 2 | deep | 18.43 | 4.29 |
-| 3 | no_momentum | 18.44 | 4.29 |
-| 4 | baseline | 18.46 | 4.30 |
-| 5 | no_regularization | 18.49 | 4.30 |
-| 6 | lr_high | 18.73 | 4.33 |
-| 7 | simple | 19.32 | 4.40 |
-
-**Toutes les expériences sans normalisation ont des MSE entre 18-19 (très cohérent).**
-
-### Analyse des Résultats
-
-#### 🏆 Meilleur Réseau : **baseline_norm** ou **no_regularization_norm**
-
-Deux réseaux ex-aequo avec MSE = 0.49 :
-
-**Configuration recommandée : no_regularization_norm**
-- **Architecture** : 7-20-10-1 (2 couches cachées)
-- **Activation** : Tanh
-- **Hyperparamètres** : LR=0.01, Momentum=0.9, L2=0 (pas de régularisation)
-- **Performance Validation** : MSE=0.49, RMSE=0.70
-- **Temps d'entraînement** : ~20 secondes
-- **Fichier** : `pricing-data/results/no_regularization_norm_learned.json`
-
-**Justification :**
-- Performance identique à baseline_norm
-- Plus simple (pas de régularisation L2)
-- Principe du rasoir d'Ockham : préférer la solution la plus simple
-
-#### 📊 Observations Clés (Découvertes via HiPlot)
-
-**1. Impact MASSIF de la Normalisation ⭐⭐⭐**
-- **Sans normalisation** : MSE moyen = 18.5
-- **Avec normalisation** : MSE moyen = 0.6
-- **Amélioration** : **-97%** d'erreur !
-- **Conclusion** : La normalisation est **LE facteur décisif**. Sans elle, impossible d'obtenir de bons résultats.
-
-**2. Architecture : Impact Marginal (avec normalisation)**
-- **Simple (7-7-1)** : MSE = 0.69
-- **Standard (7-20-10-1)** : MSE = 0.49
-- **Deep (7-50-20-10-1)** : MSE = 0.68
-- **Conclusion** : Avec normalisation, même un réseau minimal (1 couche cachée) performe très bien. Pas besoin de complexité excessive.
-
-**3. Momentum : Devient Optionnel (avec normalisation)**
-- **Avec momentum (0.9)** : MSE = 0.49
-- **Sans momentum (0)** : MSE = 0.51 (seulement +4%)
-- **Conclusion** : Contrairement aux attentes, le momentum n'est plus critique avec normalisation. La normalisation stabilise l'optimisation.
-
-**4. Régularisation L2 : Inutile (avec normalisation)**
-- **Sans L2 (0)** : MSE = 0.49
-- **Avec L2 (0.0001)** : MSE = 0.49
-- **Avec L2 (0.001)** : MSE = 0.68
-- **Conclusion** : La régularisation n'apporte rien, voire dégrade légèrement. La normalisation prévient déjà l'overfitting.
-
-**5. Activation : Tanh ≈ ReLU (avec normalisation)**
-- **Tanh** : MSE = 0.49
-- **ReLU** : MSE = 0.51
-- **Conclusion** : Les deux fonctions sont équivalentes avec normalisation.
-
-**6. Learning Rate : Toujours Critique**
-- **LR = 0.01** : MSE = 0.49-0.69 ✅
-- **LR = 0.1** : MSE = 5.42 ❌ (10× pire)
-- **Conclusion** : Même avec normalisation, un LR trop élevé cause divergence.
-
-### Graphiques et Visualisations
-
-**HiPlot (interactif)** :
-- `pricing-data/results/hiplot_visualization.html` : Exploration interactive de tous les hyperparamètres
-- Permet de filtrer, comparer et identifier visuellement les patterns
-
-**Courbes d'apprentissage** :
-- `pricing-data/results/*_convergence.png` : Évolution de l'erreur pour chaque expérience
-- `pricing-data/results/normalization_impact.png` : Comparaison avec/sans normalisation
-
----
-
-## Visualisation Interactive avec HiPlot
-
-**HiPlot** (Facebook Research) permet d'explorer visuellement les 14 expériences avec de multiples hyperparamètres.
-
-### Utilisation
+## Phase 2 : Grid Search (68 expériences)
 
 ```bash
-pip install hiplot
-bash pricing-data/run_hiplot.sh
+# Générer les configs
+python3 pricing-data/generate_grid_search.py
+
+# Lancer les entraînements
+bash pricing-data/run_grid_search.sh
 ```
 
-Ouvre `pricing-data/results/hiplot_visualization.html` dans le navigateur.
+## Analyse des Résultats
 
-### Interface
-
-**Parallel Coordinates Plot:**
-- Chaque ligne = une expérience
-- Chaque axe = un hyperparamètre ou métrique
-- Cliquer-glisser sur un axe pour filtrer
-
-**Axes importants:** `validation_mse`, `normalized`, `learning_rate`, `momentum`, `architecture`
-
-**Découvertes clés via HiPlot:**
-- Impact massif de la normalisation (-97% d'erreur)
-- Momentum optionnel avec normalisation
-- Régularisation L2 inutile
-- Architecture simple suffit
-
-Voir `HIPLOT_README.md` pour plus de détails.
-
----
-
-## Choix du Meilleur Réseau
-
-**Critères de sélection :**
-1. **Erreur de validation la plus faible**
-2. Simplicité (rasoir d'Ockham)
-3. Temps d'entraînement raisonnable
-4. Pas d'overfitting
-
-**Réseau final recommandé :**
-- **Fichier** : `pricing-data/results/no_regularization_norm_learned.json`
-- **Architecture** : 7-20-10-1 (avec normalisation)
-- **Hyperparamètres** : LR=0.01, Momentum=0.9, L2=0
-- **MSE validation** : 0.49
-- **RMSE** : 0.70
-- **Temps** : 20 secondes
-
-**Alternative (identique) :**
-- `pricing-data/results/baseline_norm_learned.json` (MSE=0.49)
-
----
-
-## Contenu du Rapport
-
-Le rapport doit contenir :
-
-### 1. Introduction
-- Objectif du projet
-- Description du problème de pricing
-- Expliquer la demarche (implementation pour and, sin, cos,...)
-
-### 2. Implémentation
-- Fonctionnalités développées (Forward, Backprop, Mini-batch, Momentum, L2)
-- Normalisation 
-- Architecture du code
-
-### 3. Expérimentation
-- **Tableau comparatif** (comme ci-dessus)
-- **Courbes d'erreur** pour chaque expérience
-- **Analyse** : 
-  - Impact du learning rate
-  - Impact du momentum
-  - Impact de la normalisation
-  - Impact de l'architecture (profondeur, largeur)
-
-### 4. Résultats
-- Meilleur réseau sélectionné
-- Justification du choix
-- Erreur finale sur le jeu de test
-
-### 5. Conclusion
-- Difficultés rencontrées
-- Améliorations possibles (Batch Normalization, Dropout, Adam optimizer...)
-
----
-
----
-
-
-### Rapport
-- [ ] Rédiger l'introduction
-- [ ] Documenter l'implémentation
-- [ ] Inclure le tableau comparatif
-- [ ] Ajouter les graphiques
-- [ ] Justifier le choix du meilleur réseau
-- [ ] Conclusion
-
----
-
-## Commandes Utiles
-
-### Lancer toutes les expériences
+### Résumé rapide
 ```bash
-bash pricing-data/RUN_ALL.sh
+python3 pricing-data/quick_summary.py
 ```
 
-### Analyser tous les résultats
+### HiPlot (visualisation interactive)
 ```bash
-# Comparaison avec/sans normalisation
-python3 pricing-data/compare_normalization.py
-
-# Analyse complète
-python3 pricing-data/complete_analysis.py
-
-# Tracer les courbes de convergence
-python3 pricing-data/plot_convergence.py
-
-# Inspecter les poids (détecter explosion/neurones morts)
-python3 pricing-data/inspect_weights.py
-```
-
-### Visualisation interactive HiPlot
-```bash
-# Lancer HiPlot (installe automatiquement si nécessaire)
-bash pricing-data/run_hiplot.sh
-
-# Ou directement
 python3 pricing-data/hiplot_analysis.py
 ```
 
-### Évaluer le meilleur réseau (validation + test)
+### Analyse par prix
 ```bash
-python3 pricing-data/evaluate_normalized.py
+python3 pricing-data/analyze_error_by_price.py
 ```
 
-### Lancer une expérience spécifique
-```bash
-mvn exec:java -Dexec.mainClass="fr.ensimag.deep.trainingConsole.Main" \
-  -Dexec.args="-x pricing-data/experiments/expe_baseline.json"
+## Meilleur Réseau (68 expériences)
+
+**grid_simple15_lr0.01_m0.9_l20.001_tanh_bs32**
+- Architecture : 7-15-1 (1 couche cachée, 15 neurones)
+- Activation : Tanh
+- LR : 0.01, Momentum : 0.9
+- L2 : 0.001, Batch : 32
+- MSE : 0.46, RMSE : 0.68
+
+Fichier : `pricing-data/results/grid_simple15_lr0.01_m0.9_l20.001_tanh_bs32_learned.json`
+
+## Résultats Principaux
+
+### Impact de la Normalisation
+
+SANS normalisation : MSE ~ 18.5
+AVEC normalisation : MSE ~ 0.5
+Amélioration : -97%
+
+### Observations du Grid Search
+
+**Architecture** : Plus simple = meilleur
+- 7-15-1 : MSE 0.46 (MEILLEUR)
+- 7-20-10-1 : MSE 0.49
+- 7-30-15-1 : MSE 0.57
+
+**Activation** : Tanh > Relu
+- Tanh : MSE moyen 3.27
+- Relu : MSE moyen 4.40
+
+**Batch Size** : 32 > 16
+- BS 32 : MSE moyen 3.42
+- BS 16 : MSE moyen 4.27
+
+**L2 Regularization** : 0.001 > 0.0001
+- L2 0.001 : MSE moyen 2.99
+- L2 0.0001 : MSE moyen 4.38
+
+## Analyse par Prix
+
+L'erreur est inversement proportionnelle au prix (facteur 54x).
+
+| Range | Échantillons | MAPE |
+|-------|--------------|------|
+| 0-1 | 285 (19%) | 203% |
+| 1-5 | 643 (43%) | 31% |
+| 5-10 | 304 (20%) | 12% |
+| 10-20 | 213 (14%) | 7% |
+| 20-50 | 55 (4%) | 4% |
+
+**Explications** :
+1. Sensibilité relative : 0.50 erreur = 100% à 0.50 mais 2.5% à 20
+2. Compression numérique : Intervalle 0.1-1 est 10x plus petit que 10-100
+3. Normalisation Z-score : Petits prix deviennent négatifs proches de zéro
+4. Déséquilibre : 62% des données < 5
+
+**Solutions proposées** :
+- Réseaux spécialisés par range
+- MAPE loss function
+- Transformation logarithmique
+
+## Structure du Projet
+
+```
+pricing-data/
+├── train.csv (7000)
+├── valid.csv (1500)
+├── test.csv (1500)
+├── experiments/ (configs JSON)
+├── results/ (réseaux entraînés)
+└── screenshot/ (HiPlot)
 ```
 
-**Résultats:**
-- Validation: MSE=67.45, RMSE=8.21
-- Test: MSE=66.22, RMSE=8.14
-- Différence: 1.83% -> Excellente généralisation
+## Fichiers Importants
+
+**Données** : train.csv, valid.csv, test.csv
+
+**Scripts Python** :
+- `generate_grid_search.py` : Génère 56 configs
+- `quick_summary.py` : Top 10 réseaux
+- `hiplot_analysis.py` : Visualisation interactive
+- `analyze_error_by_price.py` : Analyse par range de prix
+
+**Résultats** :
+- `all_experiments_summary.csv` : Toutes les expériences
+- `error_analysis_*.png` : Graphiques par prix
+- `hiplot_visualization.html` : Visualisation interactive
+- `*_learned.json` : Réseaux entraînés
+
+**Screenshots** :
+- `vue_ensemble.png` : 68 expériences
+- `validation_mse_inf_1.png` : Meilleurs réseaux
+- `tanh.png` / `relu.png` : Comparaison activations
+
+## Phase 1 : Expériences Baseline (14 expériences)
+
+### Configuration de Référence
+
+**Architecture baseline** :
+- Couches : [7 → 20 (Tanh) → 10 (Tanh) → 1 (Identity)]
+- Learning rate : 0.01, Momentum : 0.9
+- L2 regularization : 1e-4, Batch size : 32
+
+### Résultats Principaux
+
+**Impact de la normalisation : +97.5%**
+- Sans normalisation : MSE ≈ 17.30
+- Avec normalisation : MSE ≈ 0.43
+- **Amélioration moyenne : +48.0%**
+
+### Variantes Testées
+
+| Expérience | MSE (Sans norm) | MSE (Avec norm) | Amélioration |
+|------------|----------------|----------------|--------------|
+| baseline | 17.30 | 0.43 | +97.5% |
+| no_momentum | 17.32 | 0.45 | +97.4% |
+| no_reg | 17.27 | 0.46 | +97.3% |
+| lr_high (0.05) | 21.52 | 12.00 | +44.2% |
+| deep [30,20,10] | 17.43 | 17.26 | +1.0% |
+| relu | 17.28 | 17.26 | +0.1% |
+| simple [1 layer] | 17.30 | 17.55 | -1.5% |
+
+### Conclusions Phase 1
+
+1. **La normalisation est critique** pour la convergence
+2. **Architecture modérée optimale** : 2 couches cachées suffisent
+3. **Tanh >> ReLU** pour ce problème de pricing
+4. **Learning rate 0.01** est optimal (0.05 dégrade les performances)
+5. **Momentum et L2 améliorent légèrement** les résultats
+
+### Transition Phase 1 → Phase 2
+
+Les résultats de la Phase 1 ont orienté le grid search de la Phase 2 :
+- **Normalisation systématique** : Toutes les expériences Phase 2 utilisent normalisation
+- **Focus sur Tanh** : ReLU et Tanh testés
+- **Architectures variées** : De 7-7-1 à 7-50-30-15-1
+- **Learning rate fixé** : 0.01 (optimal identifié en Phase 1)
+- **Momentum fixé** : 0.9 (meilleur paramètre)
+- **Exploration L2** : 0.0001 et 0.001
+- **Batch sizes** : 16 et 32
+
+## Pour le Rapport
+
+### Section 4.3 : Analyse par Prix
+
+L'analyse révèle que l'erreur relative est inversement proportionnelle au prix. Pour les prix < 1, le MAPE atteint 203% contre 4% pour les prix > 20.
+
+[Insérer graphique error_analysis_baseline_norm.png]
+
+**Explications** :
+- Sensibilité relative
+- Compression numérique
+- Normalisation Z-score
+- Déséquilibre des données
+
+**Pistes d'amélioration** :
+- Réseaux spécialisés par range
+- MAPE loss function
+- Transformation logarithmique
+
+### Graphiques à Inclure
+
+- `error_analysis_baseline_norm.png` (6 subplots)
+- `vue_ensemble.png` (HiPlot)
+- `validation_mse_inf_1.png` (Top réseaux)
+- `tanh.png` vs `relu.png` (Comparaison activations)
+
+### Tableaux
+
+**Tableau 1** : Top 10 réseaux (all_experiments_summary.csv)
+**Tableau 2** : Erreur par prix (error_by_price_range.csv)
+**Tableau 3** : Stats par architecture/activation/batch/L2
+
+## Fonctionnalités Implémentées
+
+**Hands-on 1** : Forward propagation
+**Hands-on 2** : Backpropagation, gradient descent, JSON
+**Hands-on 3** : Mini-batch, momentum
+**Hands-on 4** : L2 regularization
+
+## Architecture Java
+
+**fr.ensimag.deep.layers** : StandardLayer (fully-connected)
+**fr.ensimag.deep.activators** : Tanh, Relu, Sigmoid, Identity
+**fr.ensimag.deep.trainer** : NetworkTrainer, QuadraticCostFunction
+**fr.ensimag.deep.serialization** : Chargement/sauvegarde JSON
+
+## Commandes Utiles
+
+```bash
+# Compiler
+mvn clean compile
+
+# Grid search
+bash pricing-data/run_grid_search.sh
+
+# Résumé rapide
+python3 pricing-data/quick_summary.py
+
+# HiPlot
+python3 pricing-data/hiplot_analysis.py
+
+# Analyse par prix
+python3 pricing-data/analyze_error_by_price.py
+```

@@ -112,7 +112,7 @@ def main():
     # Ouvrir dans navigateur
     import webbrowser, os
     webbrowser.open('file://' + os.path.abspath(html_output))
-    print("\n✅ Visualisation ouverte dans le navigateur")
+    print("\nOK: Visualisation ouverte dans le navigateur")
 
 
 if __name__ == '__main__':

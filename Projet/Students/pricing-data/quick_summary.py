@@ -33,7 +33,7 @@ def get_results():
         architecture = '-'.join(map(str, layer_sizes))
 
         # Charger les résultats
-        error_file = results_dir / expe_file.stem.replace('expe_', '') + '_error.csv'
+        error_file = results_dir / (expe_file.stem.replace('expe_', '') + '_error.csv')
 
         if not error_file.exists():
             continue
@@ -63,9 +63,9 @@ def get_results():
     return pd.DataFrame(data)
 
 def main():
-    print("\n" + "="*80)
+    print("\n" + "="*60)
     print("RÉSUMÉ DES RÉSULTATS")
-    print("="*80 + "\n")
+    print("="*60 + "\n")
 
     df = get_results()
 
@@ -75,56 +75,50 @@ def main():
 
     print(f"Total expériences : {len(df)}\n")
 
-    # Top 10 par validation MSE
-    print("="*80)
+    print("="*60)
     print("TOP 10 - Meilleure Validation MSE")
-    print("="*80)
+    print("="*60)
 
     top10 = df.nsmallest(10, 'val_mse')[['experiment', 'architecture', 'activation',
                                            'batch_size', 'l2_reg', 'val_mse', 'rmse']]
 
     print(top10.to_string(index=False))
 
-    # Stats par architecture
-    print("\n" + "="*80)
+    print("\n" + "="*60)
     print("STATISTIQUES PAR ARCHITECTURE")
-    print("="*80)
+    print("="*60)
 
     arch_stats = df.groupby('architecture')['val_mse'].agg(['mean', 'min', 'max', 'count'])
     arch_stats = arch_stats.sort_values('mean')
     print(arch_stats.to_string())
 
-    # Stats par activation
-    print("\n" + "="*80)
+    print("\n" + "="*60)
     print("STATISTIQUES PAR ACTIVATION")
-    print("="*80)
+    print("="*60)
 
     act_stats = df.groupby('activation')['val_mse'].agg(['mean', 'min', 'count'])
     act_stats = act_stats.sort_values('mean')
     print(act_stats.to_string())
 
-    # Stats par batch size
-    print("\n" + "="*80)
+    print("\n" + "="*60)
     print("STATISTIQUES PAR BATCH SIZE")
-    print("="*80)
+    print("="*60)
 
     bs_stats = df.groupby('batch_size')['val_mse'].agg(['mean', 'min', 'count'])
     bs_stats = bs_stats.sort_values('mean')
     print(bs_stats.to_string())
 
-    # Stats par L2 reg
-    print("\n" + "="*80)
+    print("\n" + "="*60)
     print("STATISTIQUES PAR L2 REGULARIZATION")
-    print("="*80)
+    print("="*60)
 
     l2_stats = df.groupby('l2_reg')['val_mse'].agg(['mean', 'min', 'count'])
     l2_stats = l2_stats.sort_values('mean')
     print(l2_stats.to_string())
 
-    # Meilleur réseau
-    print("\n" + "="*80)
-    print("🏆 MEILLEUR RÉSEAU")
-    print("="*80)
+    print("\n" + "="*60)
+    print("BEST: MEILLEUR RÉSEAU")
+    print("="*60)
 
     best = df.loc[df['val_mse'].idxmin()]
     print(f"\nExpérience : {best['experiment']}")
@@ -138,7 +132,7 @@ def main():
     # Sauvegarder CSV complet
     output_file = 'pricing-data/results/all_experiments_summary.csv'
     df.to_csv(output_file, index=False)
-    print(f"\n✅ Résumé complet sauvegardé : {output_file}")
+    print(f"\nOK: Résumé complet sauvegardé : {output_file}")
 
 if __name__ == '__main__':
     main()
